@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import '../App.css'
-import logo from '../assets/logo.png'
+import logo from '../assets/logo.webp'
 import { useNavigate } from 'react-router-dom'
 
 function App() {

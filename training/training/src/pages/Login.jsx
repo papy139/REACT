@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import api from '../api/api.js'
+import imgLogo from '../assets/logo.webp'
+import imgDoc from '../assets/doctor.webp'
 import { useNavigate } from 'react-router-dom'
 
 function Login() {
@@ -8,37 +10,37 @@ function Login() {
     const [mdp, setMdp] = useState('')
     const navigate = useNavigate()
 
-    const handleSubmit = async e => {
+    const handleSubmit = e => {
         e.preventDefault()
 
-        async function getVisiteur(LeLogin, LePassword) {
-            try {
-                const response = await api.get('/connexion', {
-                    params: {
-                        login: LeLogin,
-                        mdp: LePassword,
-                    },
-                })
-                return response
-            } catch (error) {
+        api.get('/connexion', {
+            params: {
+                login: login,
+                mdp: mdp,
+            },
+        })
+            .then(response => {
+                if (response.data != null) {
+                    console.log(response.data)
+                    localStorage.setItem('user', JSON.stringify(response.data))
+                    navigate('/accueil')
+                } else {
+                    setError('Identifiants incorrects')
+                }
+            })
+            .catch(error => {
                 setError('Erreur lors de la connexion')
                 console.error(error)
-            }
-        }
-
-        const response = await getVisiteur(login, mdp)
-        if (response && response.data != null) {
-            console.log(response.data)
-            localStorage.setItem('user', JSON.stringify(response.data))
-            navigate('/accueil')
-        } else {
-            setError('Identifiants incorrects')
-        }
+            })
     }
 
     return (
-        <div className='flex min-h-screen items-center justify-center bg-gray-100'>
-            <div className='w-96 rounded-lg bg-white p-6 shadow-lg'>
+        <div className='flex min-h-screen bg-gray-100'>
+            <div className='flex flex-1 items-center justify-center'>
+                <img src={imgDoc} alt='Logo' className='w-2/3' />
+            </div>
+            <div className='w-1/4 bg-white p-6 shadow-lg'>
+                <img src={imgLogo} alt='Logo' className='w-auto' />
                 <h2 className='mb-4 text-center text-2xl font-bold'>Connexion</h2>
                 {error && <p className='mb-2 text-center text-red-500'>{error}</p>}
                 <form onSubmit={handleSubmit}>
