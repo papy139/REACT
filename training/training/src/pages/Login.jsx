@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import api from '../api/api.js'
 import imgLogo from '../assets/logo.webp'
 import imgDoc from '../assets/doctor.webp'
@@ -9,6 +9,13 @@ function Login() {
     const [login, setLogin] = useState('')
     const [mdp, setMdp] = useState('')
     const navigate = useNavigate()
+
+    useEffect(() => {
+        const user = localStorage.getItem('user')
+        if (user) {
+            navigate('/accueil')
+        }
+    }, [navigate])
 
     const handleSubmit = e => {
         e.preventDefault()
@@ -36,11 +43,11 @@ function Login() {
 
     return (
         <div className='flex min-h-screen bg-gray-100'>
-            <div className='flex flex-1 items-center justify-center'>
+            <div className='flex flex-1 items-center justify-center lg:w-1/2'>
                 <img src={imgDoc} alt='Logo' className='w-2/3' />
             </div>
-            <div className='w-1/4 bg-white p-6 shadow-lg'>
-                <img src={imgLogo} alt='Logo' className='w-auto' />
+            <div className='w-full bg-white p-6 shadow-lg lg:w-1/4'>
+                <img src={imgLogo} alt='Logo' className='mx-auto mb-6 w-2/3' />
                 <h2 className='mb-4 text-center text-2xl font-bold'>Connexion</h2>
                 {error && <p className='mb-2 text-center text-red-500'>{error}</p>}
                 <form onSubmit={handleSubmit}>
@@ -67,7 +74,7 @@ function Login() {
                     </div>
                     <button
                         type='submit'
-                        className='w-full rounded-lg bg-blue-500 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                        className='relative flex w-full items-center justify-center rounded-lg bg-blue-500 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500'
                     >
                         Se connecter
                     </button>
