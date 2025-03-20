@@ -15,9 +15,6 @@ export default function Medecins() {
 
     }
 
-    @param { JSON } leMedecin
-
-
 
 
     return (
