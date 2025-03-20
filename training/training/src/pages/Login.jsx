@@ -4,7 +4,7 @@ import imgLogo from '../assets/logo.webp'
 import imgDoc from '../assets/doctor.webp'
 import { useNavigate } from 'react-router-dom'
 
-function Login() {
+export default function Login() {
     const [error, setError] = useState('')
     const [login, setLogin] = useState('')
     const [mdp, setMdp] = useState('')
@@ -83,5 +83,3 @@ function Login() {
         </div>
     )
 }
-
-export default Login

@@ -3,7 +3,7 @@ import '../App.css'
 import logo from '../assets/logo.webp'
 import { useNavigate } from 'react-router-dom'
 
-function App() {
+export default function App() {
     const navigate = useNavigate()
 
     function seConnecter() {
@@ -37,4 +37,3 @@ function App() {
         </>
     )
 }
-export default App

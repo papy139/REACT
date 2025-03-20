@@ -3,7 +3,7 @@ import Navbar from '../../components/Navbar'
 import { useState, useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 
-function Accueil() {
+export default function Accueil() {
     const [user, setUser] = useState(null)
     const navigate = useNavigate()
 
@@ -34,12 +34,9 @@ function Accueil() {
     return (
         <>
             <Navbar />
-            <h1>
-                Bonjour, {nom} {prenom}
-            </h1>
+            <div>Bonjour, {nom} {prenom}</div>
             <Outlet />
         </>
     )
 }
 
-export default Accueil
