@@ -6,6 +6,7 @@ import { useNavigate, Link } from 'react-router-dom'
 function Navbar() {
     const navigate = useNavigate()
 
+    // Function to handle logout
     const handleLogout = () => {
         localStorage.removeItem('user')
         navigate('/login')
@@ -37,6 +38,7 @@ function Navbar() {
                 </Link>
             </div>
             <button
+                // Call the handleLogout function when the button is clicked
                 onClick={handleLogout}
                 className='w-auto rounded-lg bg-red-500 p-2 px-7 text-white hover:bg-red-600'
             >
