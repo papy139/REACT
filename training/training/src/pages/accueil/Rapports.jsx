@@ -1,40 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import AjouterRapport from './AjouterRapport'
+import ModifierRapport from './ModifierRapport'
+import AfficherRapports from './AfficherRapports'
 
 export default function Rapports() {
-    const [userData, setUserData] = useState(null);
+    const [affichage, setAffichage] = useState('ajouter')
+    const navigate = useNavigate()
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            const parsedUser = JSON.parse(storedUser);
-            setUserData(parsedUser);
+        const user = localStorage.getItem('user')
+        if (!user) {
+            navigate('/login')
         }
-    }, []);
+    }, [navigate])
 
     return (
         <div className="p-6">
-            {userData ? (
-                <div className="bg-white shadow-lg rounded-xl p-4 w-full max-w-md mx-auto">
-                    <h2 className="text-xl font-semibold mb-4">
-                        Bonjour, {userData.nom} {userData.prenom}
-                    </h2>
-                    <div className="space-y-2">
-                        {Object.entries(userData).map(([key, value], index) => (
-                            <div
-                                key={index}
-                                className="flex justify-between border-b pb-1"
-                            >
-                                <span className="font-medium capitalize">{key}</span>
-                                <span>{value}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            ) : (
-                <p className="text-red-500 text-center">
-                    Aucune donnée utilisateur trouvée.
-                </p>
-            )}
+            <h1 className="text-2xl font-bold mb-6">Gestion des Rapports</h1>
+
+            <div className="flex space-x-4 mb-6">
+                <button
+                    onClick={() => setAffichage('ajouter')}
+                    className={`rounded-lg px-6 py-2 ${affichage === 'ajouter' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}
+                >
+                    Ajouter un rapport
+                </button>
+                <button
+                    onClick={() => setAffichage('modifier')}
+                    className={`rounded-lg px-6 py-2 ${affichage === 'modifier' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}
+                >
+                    Modifier un rapport
+                </button>
+            </div>
+
+            {affichage === 'ajouter' ? <AjouterRapport /> : <ModifierRapport />}
+            <AfficherRapports />
         </div>
-    );
+    )
 }
