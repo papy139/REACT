@@ -21,6 +21,10 @@ dist-ssr/
 *.md
 *.pdf
 
+# Ne pas suivre le fichier et le dossier API
+api.js
+api/
+
 # IDE / Editors
 .vscode/*
 !.vscode/extensions.json
