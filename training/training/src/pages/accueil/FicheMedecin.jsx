@@ -30,7 +30,6 @@ export default function FicheMedecin() {
     )
 }
 
-// Sous-composant Fiche
 function Fiche({ idMedecin }) {
     const [data, setData] = useState({})
     const [message, setMessage] = useState('')
@@ -130,7 +129,6 @@ function Fiche({ idMedecin }) {
     )
 }
 
-// Sous-composant Rapports
 function Rapports({ idMedecin }) {
     const [rapports, setRapports] = useState([])
     const [loading, setLoading] = useState(false)
@@ -139,7 +137,9 @@ function Rapports({ idMedecin }) {
         async function fetchRapports() {
             try {
                 setLoading(true)
-                const response = await api.get('/rapportMedecin', { params: { idMedecin: idMedecin } })
+                const response = await api.get('/rapports_medecin', {
+                    params: { idMedecin: idMedecin }
+                })
                 setRapports(response.data)
             } catch (error) {
                 console.error(error.response?.data || error.message)
@@ -152,29 +152,39 @@ function Rapports({ idMedecin }) {
 
     return (
         <div className="bg-gray-100 p-6 rounded-lg">
+            <h2 className="text-xl font-bold mb-4">Rapports du Médecin</h2>
+
             {loading ? (
-                <p className="text-center text-gray-500">Chargement des rapports...</p>
-            ) : rapports.length === 0 ? (
-                <p className="text-center">Aucun rapport trouvé pour ce médecin.</p>
+                <p className="text-center text-gray-500">Chargement...</p>
             ) : (
-                <table className="w-full table-auto border-collapse border border-gray-300">
-                    <thead className="bg-gray-200">
-                        <tr>
-                            <th className="border p-2">Date</th>
-                            <th className="border p-2">Motif</th>
-                            <th className="border p-2">Bilan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rapports.map((r) => (
-                            <tr key={r.id} className="hover:bg-gray-100">
-                                <td className="border p-2">{new Date(r.date).toLocaleDateString()}</td>
-                                <td className="border p-2">{r.motif}</td>
-                                <td className="border p-2">{r.bilan}</td>
+                <div className="max-h-96 overflow-y-auto">
+                    <table className="min-w-full table-auto border-collapse border border-gray-300">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="border p-2 text-left">Date</th>
+                                <th className="border p-2 text-left">Motif</th>
+                                <th className="border p-2 text-left">Bilan</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {rapports.length === 0 ? (
+                                <tr>
+                                    <td colSpan="3" className="border p-4 text-center text-gray-500">
+                                        Aucun rapport trouvé pour ce médecin.
+                                    </td>
+                                </tr>
+                            ) : (
+                                rapports.map((r) => (
+                                    <tr key={r.id} className="hover:bg-gray-100">
+                                        <td className="border p-2">{new Date(r.date).toLocaleDateString()}</td>
+                                        <td className="border p-2">{r.motif}</td>
+                                        <td className="border p-2">{r.bilan}</td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             )}
         </div>
     )

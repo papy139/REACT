@@ -17,22 +17,19 @@ export default function ModifierRapport() {
 
         try {
             setLoading(true)
-            const response = await api.get('/rapport', {
-                params: { idVisiteur: String(user.id), date: dateRecherche }
-            })
+            const response = await api.get(`/rapports/${user.id}`)
+
             setRapports(response.data)
-            if (response.data.length === 0) {
-                setMessage('Aucun rapport trouvé pour cette date.')
-            } else {
-                setMessage('')
-            }
+            setMessage(response.data.length === 0 ? 'Aucun rapport trouvé.' : '')
         } catch (error) {
             console.error(error.response?.data || error.message)
-            setMessage('Erreur lors du chargement des rapports')
+            setMessage('Erreur serveur')
         } finally {
             setLoading(false)
         }
     }
+
+
 
     function selectionnerRapport(rapport) {
         setRapportSelectionne(rapport)
@@ -43,21 +40,20 @@ export default function ModifierRapport() {
     async function modifierRapport(e) {
         e.preventDefault()
         if (!rapportSelectionne) return
-
         try {
             setLoading(true)
             await api.put('/majRapport', {
                 idRapport: rapportSelectionne.id,
-                motif: motif,
-                bilan: bilan
+                idVisiteur: user.id,
+                motif,
+                bilan
             })
             setMessage('Rapport modifié avec succès !')
             chercherRapports()
             setRapportSelectionne(null)
             setMotif('')
             setBilan('')
-        } catch (error) {
-            console.error(error.response?.data || error.message)
+        } catch {
             setMessage('Erreur lors de la modification')
         } finally {
             setLoading(false)
@@ -72,7 +68,7 @@ export default function ModifierRapport() {
             {loading && <p className="text-center text-gray-500 mb-4">Chargement...</p>}
 
             <div className="mb-6">
-                <label className="block text-gray-700">Date de la visite</label>
+                <label className="block text-gray-700">Date</label>
                 <input
                     type="date"
                     value={dateRecherche}
@@ -89,16 +85,17 @@ export default function ModifierRapport() {
 
             {rapports.length > 0 && (
                 <ul className="mt-4 max-h-40 overflow-y-auto rounded-lg border bg-white shadow-md">
-                    {rapports.map((r) => (
+                    {rapports.map((r, idx) => (
                         <li
-                            key={r.id}
+                            key={(r.id ?? 'tmp') + '-' + idx}
                             className="cursor-pointer px-4 py-2 hover:bg-gray-100"
                             onClick={() => selectionnerRapport(r)}
                         >
-                            Rapport du {new Date(r.date).toLocaleDateString()}
+                            {r.motif || 'Motif indisponible'}
                         </li>
                     ))}
                 </ul>
+
             )}
 
             {rapportSelectionne && (

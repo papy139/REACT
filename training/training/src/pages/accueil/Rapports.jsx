@@ -35,7 +35,7 @@ export default function Rapports() {
             </div>
 
             {affichage === 'ajouter' ? <AjouterRapport /> : <ModifierRapport />}
-            <AfficherRapports />
+            {/* <AfficherRapports /> */}
         </div>
     )
 }

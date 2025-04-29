@@ -1,8 +1,21 @@
-# React + Vite
+# Projet GSB - Gestion des Visites Médicales
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Présentation
 
-Currently, two official plugins are available:
+Ce projet a été développé dans le cadre du BTS SIO SLAM pour gérer les rapports de visite médicale pour le laboratoire fictif GSB.  
+Il permet aux visiteurs médicaux de :
+- Se connecter à l'application,
+- Ajouter de nouveaux rapports de visite,
+- Modifier des rapports existants,
+- Gérer et consulter les informations des médecins,
+- Consulter l'historique des rapports.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
+
+## Technologies utilisées
+
+- **React** avec Vite pour une structure légère,
+- **TailwindCSS** pour le style rapide et épuré,
+- **React Router DOM** pour la navigation entre les pages,
+- **Axios** pour les appels API REST,
+- **API REST externe** fournie pour les données visiteurs, médecins, rapports.
