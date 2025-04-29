@@ -1,34 +1,49 @@
-import React from 'react'
-import logo from '../assets/logo.webp'
-import { useNavigate, Link } from 'react-router-dom'
+// Chemin : src/components/Navbar.jsx
+
+import { useNavigate } from 'react-router-dom'
 
 export default function Navbar() {
     const navigate = useNavigate()
 
-    function handleLogout() {
-        const confirmation = window.confirm('Êtes-vous sûr de vouloir vous déconnecter ?')
-        if (confirmation) {
+    function logout() {
+        if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
             localStorage.removeItem('user')
             navigate('/login')
         }
     }
 
     return (
-        <nav className='flex items-center justify-between bg-blue-600 p-5'>
-            <div className='flex items-center'>
-                <img src={logo} alt='Logo' className='h-10 w-10 rounded' />
-            </div>
-            <div className='ml-10 flex-1 justify-center space-x-6 text-center'>
-                <Link to='/accueil' className='rounded-lg bg-gray-700 p-2 px-7 text-white hover:bg-gray-800'>Dashboard</Link>
-                <Link to='/accueil/rapports' className='rounded-lg bg-gray-700 p-2 px-7 text-white hover:bg-gray-800'>Rapport</Link>
-                <Link to='/accueil/medecins' className='rounded-lg bg-gray-700 p-2 px-7 text-white hover:bg-gray-800'>Médecin</Link>
-            </div>
-            <button
-                onClick={handleLogout}
-                className='rounded-lg bg-red-500 p-2 px-7 text-white hover:bg-red-600'
-            >
-                Déconnexion
-            </button>
-        </nav>
+        <header className="bg-blue-600 text-white shadow">
+            <nav className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center px-4 py-4 gap-4">
+                <h1 className="text-xl font-bold">GSB Rapports</h1>
+
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-sm sm:text-base">
+                    <button
+                        onClick={() => navigate('/accueil')}
+                        className="hover:underline hover:text-gray-200"
+                    >
+                        Accueil
+                    </button>
+                    <button
+                        onClick={() => navigate('/accueil/medecins')}
+                        className="hover:underline hover:text-gray-200"
+                    >
+                        Médecins
+                    </button>
+                    <button
+                        onClick={() => navigate('/accueil/rapports')}
+                        className="hover:underline hover:text-gray-200"
+                    >
+                        Rapports
+                    </button>
+                    <button
+                        onClick={logout}
+                        className="rounded bg-white text-blue-600 px-3 py-1 font-semibold hover:bg-gray-100"
+                    >
+                        Déconnexion
+                    </button>
+                </div>
+            </nav>
+        </header>
     )
 }

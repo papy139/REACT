@@ -1,8 +1,10 @@
+// Chemin : src/pages/Login.jsx
+
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../api/api'
 import imgLogo from '../assets/logo.webp'
-import imgDoc from '../assets/doctor.webp'
+import imgJdoc from '../assets/jdoc.webp'
 
 export default function Login() {
     const [error, setError] = useState('')
@@ -23,8 +25,17 @@ export default function Login() {
             const response = await api.get('/connexion', {
                 params: { login: login, mdp: mdp }
             })
+
             if (response.data) {
-                localStorage.setItem('user', JSON.stringify(response.data))
+                const user = {
+                    id: response.data.id,
+                    nom: response.data.nom,
+                    prenom: response.data.prenom,
+                    adresse: response.data.adresse,
+                    cp: response.data.cp,
+                    ville: response.data.ville
+                }
+                localStorage.setItem('user', JSON.stringify(user))
                 navigate('/accueil')
             } else {
                 setError('Identifiants incorrects')
@@ -38,10 +49,18 @@ export default function Login() {
     return (
         <div className='flex min-h-screen bg-gray-100'>
             <div className='flex flex-1 items-center justify-center lg:w-1/2'>
-                <img src={imgDoc} alt='Docteur' className='w-2/3' />
+                <img
+                    src={imgJdoc}
+                    alt='Docteur Sins'
+                    className='w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl object-contain mx-auto p-4'
+                />
             </div>
             <div className='w-full bg-white p-6 shadow-lg lg:w-1/4'>
-                <img src={imgLogo} alt='Logo' className='mx-auto mb-6 w-2/3' />
+                <img
+                    src={imgLogo}
+                    alt='Logo'
+                    className='w-3/4 max-w-xs mx-auto mb-6 object-contain'
+                />
                 <h2 className='mb-4 text-center text-2xl font-bold'>Connexion</h2>
                 {error && <p className='mb-2 text-center text-red-500'>{error}</p>}
                 <form onSubmit={handleSubmit}>

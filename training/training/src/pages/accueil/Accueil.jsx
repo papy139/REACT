@@ -1,10 +1,14 @@
+// Chemin : src/pages/accueil/Accueil.jsx
+
 import Navbar from '../../components/Navbar'
 import { useState, useEffect } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate, useLocation } from 'react-router-dom'
+import imgDoc from '../../assets/doctor.webp'
 
 export default function Accueil() {
     const [user, setUser] = useState(null)
     const navigate = useNavigate()
+    const location = useLocation()
 
     useEffect(() => {
         const data = JSON.parse(localStorage.getItem('user'))
@@ -15,24 +19,18 @@ export default function Accueil() {
         }
     }, [navigate])
 
-    if (user === null) {
-        return (
-            <div className='flex h-1/2 items-center justify-center'>
-                <p>Veuillez vous reconnecter en cliquant ici :</p>
-                <button
-                    className='rounded-lg bg-gray-700 p-2 px-7 text-white hover:bg-gray-800'
-                    onClick={() => navigate('/login')}
-                >
-                    Ici
-                </button>
-            </div>
-        )
-    }
-
     return (
         <>
             <Navbar />
-            <div className="p-4 text-lg">Bienvenue {user.nom} {user.prenom}</div>
+            {location.pathname === '/accueil' && (
+                <div className="flex justify-center p-4">
+                    <img
+                        src={imgDoc}
+                        alt="Image Médecin Accueil"
+                        className="w-full max-w-4xl object-contain"
+                    />
+                </div>
+            )}
             <Outlet />
         </>
     )
