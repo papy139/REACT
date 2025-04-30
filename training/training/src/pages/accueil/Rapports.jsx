@@ -36,18 +36,11 @@ export default function Rapports() {
                         >
                             Modifier un rapport
                         </button>
-                        <button
-                            onClick={() => setAffichage('afficher')}
-                            className={`rounded-lg px-4 py-2 text-sm sm:text-base ${affichage === 'afficher' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}
-                        >
-                            Afficher mes rapports
-                        </button>
                     </div>
 
                     <div className="overflow-hidden pb-8 min-h-[400px]">
                         {affichage === 'ajouter' && <AjouterRapport />}
                         {affichage === 'modifier' && <ModifierRapport />}
-                        {affichage === 'afficher' && <AfficherRapports />}
                     </div>
                 </div>
             </div>

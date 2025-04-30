@@ -27,7 +27,7 @@ export default function Accueil() {
                     <img
                         src={imgDoc}
                         alt="Image Médecin Accueil"
-                        className="w-full max-w-4xl object-contain"
+                        className="w-1/3 max-w-4xl object-contain"
                     />
                 </div>
             )}

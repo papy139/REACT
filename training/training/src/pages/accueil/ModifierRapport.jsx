@@ -1,6 +1,4 @@
-// Chemin : src/pages/accueil/ModifierRapport.jsx
-
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import api from '../../api/api'
 
 export default function ModifierRapport() {
@@ -15,12 +13,18 @@ export default function ModifierRapport() {
 
     const user = JSON.parse(localStorage.getItem('user'))
 
+    useEffect(() => {
+        chercherRapports()
+    }, [])
+
     async function chercherRapports() {
         if (!user) return
 
         try {
             setLoading(true)
             const response = await api.get(`/rapports/${user.id}`)
+            console.log('Rapports récupérés :', response.data)
+
             if (Array.isArray(response.data)) {
                 setRapports(response.data)
                 setMessage(response.data.length === 0 ? 'Aucun rapport trouvé.' : '')
@@ -41,15 +45,19 @@ export default function ModifierRapport() {
 
     function filtrerParDate(date) {
         setDateRecherche(date)
+
         if (!date) {
             chercherRapports()
-        } else {
-            const filtres = rapports.filter(r => {
-                const dateRapport = new Date(r.date).toLocaleDateString('fr-CA')
-                return dateRapport === date
-            })
-            setRapports(filtres)
+            return
         }
+
+        const filtres = rapports.filter(r => {
+            const dateRapport = new Date(r.date).toISOString().split('T')[0]
+            console.log('Comparaison:', { rapport: dateRapport, input: date }) // debug
+            return dateRapport === date
+        })
+
+        setRapports(filtres)
     }
 
     function selectionnerRapport(rapport) {
