@@ -15,7 +15,7 @@ export default function Navbar() {
     return (
         <header className="bg-blue-600 text-white shadow">
             <nav className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center px-4 py-4 gap-4">
-                <h1 className="text-xl font-bold">GSB Rapports</h1>
+                <h1 className="text-xl font-bold">GSB</h1>
 
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-sm sm:text-base">
                     <button
