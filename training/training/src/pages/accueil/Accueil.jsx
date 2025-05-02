@@ -21,14 +21,20 @@ export default function Accueil() {
         <>
             <Navbar />
             {location.pathname === '/accueil' && (
-                <div className="flex justify-center p-4">
+                <div className="flex flex-col items-center p-4">
                     <img
                         src={imgDoc}
                         alt="Image Médecin Accueil"
                         className="w-1/3 max-w-4xl object-contain"
                     />
+                    {user && (
+                        <p className="mt-4 text-xl font-semibold text-gray-700">
+                            Bienvenue {user.prenom} {user.nom}
+                        </p>
+                    )}
                 </div>
             )}
+
             <Outlet />
         </>
     )
