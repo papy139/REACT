@@ -1,5 +1,3 @@
-// src/pages/accueil/FicheMedecin.jsx
-
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import api from '../../api/api'
@@ -7,14 +5,18 @@ import api from '../../api/api'
 export default function FicheMedecin() {
     const { idMedecin } = useParams()
     const [medecin, setMedecin] = useState(null)
+    const [formData, setFormData] = useState(null)
     const [message, setMessage] = useState('')
     const [typeMessage, setTypeMessage] = useState('')
     const [loading, setLoading] = useState(false)
-    const [affichage, setAffichage] = useState('fiche') // fiche ou rapports
+    const [affichage, setAffichage] = useState('fiche')
 
     useEffect(() => {
         api.get(`/medecin/${idMedecin}`)
-            .then(response => setMedecin(response.data))
+            .then(response => {
+                setMedecin(response.data)
+                setFormData(response.data)
+            })
             .catch(() => {
                 setMessage("Erreur lors du chargement du médecin.")
                 setTypeMessage('error')
@@ -23,16 +25,17 @@ export default function FicheMedecin() {
 
     function handleChange(e) {
         const { name, value } = e.target
-        setMedecin({ ...medecin, [name]: value })
+        setFormData({ ...formData, [name]: value })
     }
 
     async function handleSubmit(e) {
         e.preventDefault()
         try {
             setLoading(true)
-            await api.put('/majMedecin', medecin)
+            await api.put('/majMedecin', formData)
             setMessage('Médecin modifié avec succès !')
             setTypeMessage('success')
+            setMedecin(formData)
         } catch {
             setMessage("Erreur lors de la modification du médecin.")
             setTypeMessage('error')
@@ -41,39 +44,12 @@ export default function FicheMedecin() {
         }
     }
 
-    function Fiche() {
-        return (
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label className="block">Nom</label>
-                    <input name="nom" value={medecin.nom} onChange={handleChange} className="w-full border p-2 rounded" required />
-                </div>
-                <div>
-                    <label className="block">Prénom</label>
-                    <input name="prenom" value={medecin.prenom} onChange={handleChange} className="w-full border p-2 rounded" required />
-                </div>
-                <div>
-                    <label className="block">Adresse</label>
-                    <input name="adresse" value={medecin.adresse} onChange={handleChange} className="w-full border p-2 rounded" required />
-                </div>
-                <div>
-                    <label className="block">Spécialité</label>
-                    <input name="specialitecomplementaire" value={medecin.specialitecomplementaire} onChange={handleChange} className="w-full border p-2 rounded" />
-                </div>
-                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" disabled={loading}>
-                    Enregistrer
-                </button>
-            </form>
-        )
-    }
-
     function RapportsMedecin() {
         const [rapports, setRapports] = useState([])
 
         useEffect(() => {
             api.get(`/rapports/${idMedecin}`)
                 .then(res => {
-                    console.log(res.data)
                     const sorted = res.data.sort((a, b) => new Date(b.date) - new Date(a.date))
                     setRapports(sorted)
                 })
@@ -104,7 +80,6 @@ export default function FicheMedecin() {
                     ))}
                 </tbody>
             </table>
-
         )
     }
 
@@ -135,8 +110,68 @@ export default function FicheMedecin() {
                 </button>
             </div>
 
-            {affichage === 'fiche' && <Fiche />}
+            {affichage === 'fiche' && (
+                <Fiche
+                    formData={formData}
+                    handleChange={handleChange}
+                    handleSubmit={handleSubmit}
+                    loading={loading}
+                />
+            )}
             {affichage === 'rapports' && <RapportsMedecin />}
         </div>
+    )
+}
+
+function Fiche({ formData, handleChange, handleSubmit, loading }) {
+    return (
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+                <label className="block">Nom</label>
+                <input
+                    name="nom"
+                    value={formData?.nom || ''}
+                    onChange={handleChange}
+                    className="w-full border p-2 rounded"
+                    required
+                />
+            </div>
+            <div>
+                <label className="block">Prénom</label>
+                <input
+                    name="prenom"
+                    value={formData?.prenom || ''}
+                    onChange={handleChange}
+                    className="w-full border p-2 rounded"
+                    required
+                />
+            </div>
+            <div>
+                <label className="block">Adresse</label>
+                <input
+                    name="adresse"
+                    value={formData?.adresse || ''}
+                    onChange={handleChange}
+                    className="w-full border p-2 rounded"
+                    required
+                />
+            </div>
+            <div>
+                <label className="block">Spécialité</label>
+                <input
+                    name="specialitecomplementaire"
+                    value={formData?.specialitecomplementaire || ''}
+                    onChange={handleChange}
+                    className="w-full border p-2 rounded"
+                />
+            </div>
+            <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                disabled={loading}
+            >
+                Enregistrer
+            </button>
+        </form>
     )
 }

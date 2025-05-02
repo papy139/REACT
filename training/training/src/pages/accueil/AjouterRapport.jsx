@@ -1,5 +1,3 @@
-// Chemin : src/pages/accueil/AjouterRapport.jsx
-
 import { useState } from 'react'
 import api from '../../api/api'
 

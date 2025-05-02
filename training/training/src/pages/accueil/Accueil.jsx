@@ -1,5 +1,3 @@
-// Chemin : src/pages/accueil/Accueil.jsx
-
 import Navbar from '../../components/Navbar'
 import { useState, useEffect } from 'react'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'

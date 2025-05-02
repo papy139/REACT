@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import api from '../../api/api'
 
 export default function ModifierRapport() {
@@ -13,26 +13,33 @@ export default function ModifierRapport() {
 
     const user = JSON.parse(localStorage.getItem('user'))
 
-    useEffect(() => {
-        chercherRapports()
-    }, [])
+    async function filtrerParDate(date) {
+        setDateRecherche(date)
+        setRapports([])
 
-    async function chercherRapports() {
-        if (!user) return
+        if (!date || !user) return
 
         try {
             setLoading(true)
-            const response = await api.get(`/rapports/${user.id}`)
-            console.log('Rapports récupérés :', response.data)
+            const response = await api.get('/rapports_a_date', {
+                params: {
+                    idVisiteur: user.id,
+                    date: date
+                }
+            })
 
             if (Array.isArray(response.data)) {
                 setRapports(response.data)
-                setMessage(response.data.length === 0 ? 'Aucun rapport trouvé.' : '')
-                setTypeMessage('error')
+                if (response.data.length === 0) {
+                    setMessage('Aucun rapport trouvé pour cette date.')
+                    setTypeMessage('error')
+                } else {
+                    setMessage('')
+                    setTypeMessage('')
+                }
             } else {
                 setMessage('Réponse invalide de l’API.')
                 setTypeMessage('error')
-                setRapports([])
             }
         } catch (error) {
             console.error(error.response?.data || error.message)
@@ -43,28 +50,16 @@ export default function ModifierRapport() {
         }
     }
 
-    function filtrerParDate(date) {
-        setDateRecherche(date)
-
-        if (!date) {
-            chercherRapports()
-            return
-        }
-
-        const filtres = rapports.filter(r => {
-            const dateRapport = new Date(r.date).toISOString().split('T')[0]
-            console.log('Comparaison:', { rapport: dateRapport, input: date }) // debug
-            return dateRapport === date
-        })
-
-        setRapports(filtres)
-    }
-
     function selectionnerRapport(rapport) {
-        setRapportSelectionne(rapport)
+        setRapportSelectionne({
+            id: rapport.idRapport,
+            motif: rapport.motif,
+            bilan: rapport.bilan
+        })
         setMotif(rapport.motif)
         setBilan(rapport.bilan)
     }
+
 
     async function modifierRapport(e) {
         e.preventDefault()
@@ -78,25 +73,33 @@ export default function ModifierRapport() {
 
         try {
             setLoading(true)
-            await api.put('/majRapport', {
+
+            const donnees = {
                 idRapport: rapportSelectionne.id,
                 idVisiteur: user.id,
                 motif,
                 bilan
-            })
+            }
+
+            console.log('Envoi à l’API :', donnees)
+
+            await api.put('/majRapports', donnees)
+
             setMessage('Rapport modifié avec succès !')
             setTypeMessage('success')
-            chercherRapports()
+            filtrerParDate(dateRecherche)
             setRapportSelectionne(null)
             setMotif('')
             setBilan('')
-        } catch {
+        } catch (error) {
+            console.error(error.response?.data || error.message)
             setMessage('Erreur lors de la modification.')
             setTypeMessage('error')
         } finally {
             setLoading(false)
         }
     }
+
 
     return (
         <div className="min-h-screen bg-gray-50 flex items-start justify-center px-4 py-6 sm:px-6 lg:px-8">
@@ -112,54 +115,43 @@ export default function ModifierRapport() {
 
                 <div className="mb-6">
                     <label className="block text-gray-700">Rechercher par date</label>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                        <input
-                            type="date"
-                            value={dateRecherche}
-                            onChange={(e) => filtrerParDate(e.target.value)}
-                            className="w-full rounded-lg border p-2"
-                        />
-                        <button
-                            onClick={chercherRapports}
-                            className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-                        >
-                            Rechercher
-                        </button>
-                    </div>
+                    <input
+                        type="date"
+                        value={dateRecherche}
+                        onChange={(e) => filtrerParDate(e.target.value)}
+                        className="w-full rounded-lg border p-2"
+                    />
                 </div>
 
-                {rapports.length > 0 && !rapportSelectionne && (
+                {dateRecherche && rapports.length > 0 && !rapportSelectionne && (
                     <div className="max-h-96 overflow-y-auto">
                         <table className="min-w-full table-auto border-collapse border border-gray-300">
                             <thead className="bg-gray-200">
                                 <tr>
-                                    <th className="border p-2 text-left">Date</th>
                                     <th className="border p-2 text-left">Motif</th>
                                     <th className="border p-2 text-left">Bilan</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {rapports.map((r) => (
+                                {rapports.map((r, index) => (
                                     <tr
-                                        key={r.id}
+                                        key={index}
                                         className="cursor-pointer hover:bg-gray-100"
                                         onClick={() => selectionnerRapport(r)}
                                     >
-                                        <td className="border p-2">{new Date(r.date).toLocaleDateString()}</td>
                                         <td className="border p-2">{r.motif}</td>
                                         <td className="border p-2">{r.bilan}</td>
                                     </tr>
                                 ))}
                             </tbody>
+
                         </table>
                     </div>
                 )}
 
                 {rapportSelectionne && (
                     <form onSubmit={modifierRapport} className="mt-6 pb-8 min-h-[400px]">
-                        <h3 className="mb-4 text-lg font-semibold">
-                            Modifier le rapport du {new Date(rapportSelectionne.date).toLocaleDateString()}
-                        </h3>
+                        <h3 className="mb-4 text-lg font-semibold">Modifier le rapport sélectionné</h3>
 
                         <div className="mb-4">
                             <label className="block text-gray-700">Motif</label>

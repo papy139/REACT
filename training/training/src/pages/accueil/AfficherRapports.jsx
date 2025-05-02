@@ -1,5 +1,3 @@
-// Chemin : src/pages/accueil/AfficherRapports.jsx
-
 import { useState, useEffect } from 'react'
 import api from '../../api/api'
 
