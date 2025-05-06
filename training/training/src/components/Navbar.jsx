@@ -36,6 +36,9 @@ export default function Navbar() {
                     >
                         Rapports
                     </button>
+
+                    <button onClick={() => navigate('/accueil/visiteur')} className="hover:underline hover:text-gray-200">Vos infos</button>
+
                     <button
                         onClick={logout}
                         className="rounded bg-white text-blue-600 px-3 py-1 font-semibold hover:bg-gray-100"
